@@ -53,28 +53,28 @@ def ball(strip,pos):
 		#print(pos+i,colors[i] if pos+i<74 else colors[5])
 	strip.show()
 
-def threadBack(event,strip):
-	while event.wait():
-		
-		if backcolor==1:
-			blinkLightsOrange(strip)
-		elif backcolor==0:
-			blinkLightsBlue(strip)
-		time.sleep(150/1000.0)
-		if not event.is_set():
-			colorWipe(strip,0,0)
+def threadStair(event,strip1,strip2,eventStop):
+	try:
+		while event.wait():
+			if eventStop.is_set():
+				colorWipe(strip1,0,0)
+				colorWipe(strip2,0,0)
+				return
+			if stairscolor==1:
+				blinkLightsOrange(strip1)
+				blinkLightsOrange(strip2)
+			elif stairscolor==0:
+				blinkLightsBlue(strip1)
+				blinkLightsBlue(strip2)
+			time.sleep(150/1000.0)
+			if not event.is_set():
+				colorWipe(strip1,0,0)
+				colorWipe(strip2,0,0)
+	except:
+		colorWipe(strip1,0,0)
+		colorWipe(strip2,0,0)
 
-def threadStair(event,strip):
-	while event.wait():
-		
-		if stairscolor==1:
-			blinkLightsOrange(strip)
-		elif stairscolor==0:
-			blinkLightsBlue(strip)
-		time.sleep(250/1000.0)
-		if not event.is_set():
-			colorWipe(strip,0,0)
-	
+		return
 
 def blinkLightsBlue(strip):
 	colors = [Color(15, 3, 252),Color(3, 126, 202),Color(15, 232, 252)]
@@ -129,21 +129,7 @@ def action(deviceName, action):
 		elif action == 'blue':
 			stairscolor = 0
 
-	if deviceName == 'backcolor':
-		if action == "orange":
-			backcolor = 1
-		elif action == 'blue':
-			backcolor = 0
 	
-	if deviceName == "back":
-		if action == "off":
-			print("back off")
-			backEvent.clear()
-
-		elif action == "on":
-			print('back on')
-			backEvent.set()
-
 	elif deviceName == "stairs":
 		if action == "off":
 			print("stairs off")
@@ -165,13 +151,11 @@ def action(deviceName, action):
 	return update()
 
 def update():
-	global flakeSts,backcolor,backSts,stairsSts,stairscolor
+	global flakeSts,stairsSts,stairscolor
 	
 	templateData = {
 	  		'stairs'  : stairsSts,
 	  		'flake'  : flakeSts,
-			'back'   : backSts,
-			'backcolor' : backcolor,
 			'staircolor' : stairscolor
 	}
 	return render_template('index.html', **templateData)
@@ -180,8 +164,6 @@ if __name__ == "__main__":
 	
 	stairsSts = 0
 	flakeSts = 0
-	backSts = 0
-	backcolor = 0
 	stairscolor = 0	
 	LED_GPIO        = 13 
 	LED_CHANNEL    = 1
@@ -203,13 +185,16 @@ if __name__ == "__main__":
 	# Intialize the library (must be called once before other functions).
 	strip_flake.begin()
 	# spell(strip,5)
-	
-	backEvent = threading.Event()
-	backEvent.clear()
+	stopEvent= threading.Event()
+	stopEvent.clear()
 	stairEvent = threading.Event()
 	stairEvent.clear()
-	backThread = threading.Thread(target=threadBack,args=(backEvent,strip_back,))
-	backThread.start()
-	stairThread = threading.Thread(target=threadStair,args=(stairEvent,strip_side,))
+	stairThread = threading.Thread(target=threadStair,args=(stairEvent,strip_side,strip_back,stopEvent,))
 	stairThread.start()
-	app.run(host='0.0.0.0', port=80, debug=True)
+	try:
+		app.run(host='0.0.0.0', port=80, debug=False)
+	except:
+		print("caught")
+		stopEvent.set()
+		stairEvent.set()
+		stairThread.join()

@@ -6,11 +6,11 @@
   <body> 
 		<h1>LED Light Strip Control</h1> 
 		<br> 
-		<h2> LED Lights Status & Control </h2> 
-		<h3> Ice Spell ==>  
+		<h1> LED Lights Status & Control </h1> 
+		<h1> Ice Spell ==>  
 			<a href="/spell/fire"class="button">Fire</a> 
-		</h3> 
-		<h3> Stairs  ==>   
+		</h1> 
+		<h1> Ambient lights  ==>   
 			{% if  stairs   == 1 %} 
 				<a href="/stairs/off"class="button">TURN OFF</a> 
 			{% else %} 
@@ -22,26 +22,13 @@
 			{% else %} 
 				<a href="/staircolor/orange" class="button">BLUE</a>  
 			{% endif %}
-		</h3> 
-		<h3> SnowFlake ==>   
+		</h1> 
+		<h1> SnowFlake ==>   
 			{% if  flake   == 1 %} 
 				<a href="/flake/off"class="button">TURN OFF</a> 
 			{% else %} 
 				<a href="/flake/on" class="button">TURN ON</a>  
 			{% endif %}	 
-		</h3> 
-		<h3> BackLights ==>   
-			{% if  back   == 1 %} 
-				<a href="/back/off"class="button">TURN OFF</a> 
-			{% else %} 
-				<a href="/back/on" class="button">TURN ON</a>  
-			{% endif %}
-			&nbsp;&nbsp;	 
-			{% if  backcolor   == 1 %} 
-				<a href="/backcolor/blue"class="button">ORANGE</a> 
-			{% else %} 
-				<a href="/backcolor/orange" class="button">BLUE</a>  
-			{% endif %}
-		</h3> 
+		</h1> 
   </body> 
 </html>
