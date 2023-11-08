@@ -12,7 +12,7 @@ import random
 LED_COUNT      = 77     # Number of LED pixels.
 LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA        = 10      # DMA channel to use for generating a signal (try 10)
-LED_BRIGHTNESS = 128      # Set to 0 for darkest and 255 for brightest
+LED_BRIGHTNESS = 255      # Set to 0 for darkest and 255 for brightest
 LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
 
 app = Flask(__name__)
@@ -32,6 +32,11 @@ def colorWipe(strip, color, wait_ms=50):
 def spell(strip,wait):
 	"""ice spell"""
 	print("fire spell")
+	restartstair=False
+	if stairEvent.is_set():
+		stairEvent.clear()
+		restartstair=True
+
 	for i in range(0, strip.numPixels()-1):
 		ball(strip,i)                
 		time.sleep(wait/1000.0)
@@ -43,6 +48,8 @@ def spell(strip,wait):
 		strip.show()
 		time.sleep(wait/1000.0)
 	colorWipe(strip,Color(0,0,0),0)
+	if restartstair:
+		stairEvent.set()
 
 def ball(strip,pos):
 	for i in range(0,pos):
