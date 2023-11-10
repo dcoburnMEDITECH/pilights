@@ -150,6 +150,7 @@ def action(deviceName, action):
 		if action == "off":
 			print('flake off')
 			colorWipe(strip_flake,0,0)
+			colorWipe(strip_flake,0,0)
 
 		elif action == "on":
 			print('flake on blue')
@@ -187,7 +188,7 @@ if __name__ == "__main__":
 	
 	LED_GPIO        = 21      # GPIO pin connected to the pixels (18 uses PWM!).
 	LED_CHANNEL    = 0
-	LED_COUNT      = 31
+	LED_COUNT      = 6
 	strip_flake = Adafruit_NeoPixel(LED_COUNT, LED_GPIO, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
 	# Intialize the library (must be called once before other functions).
 	strip_flake.begin()
